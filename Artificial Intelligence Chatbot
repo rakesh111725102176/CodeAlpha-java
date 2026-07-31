@@ -1,1 +1,84 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.HashMap;
 
+public class ChatBot extends JFrame implements ActionListener {
+
+    JTextArea chatArea;
+    JTextField inputField;
+    JButton sendButton;
+
+    HashMap<String, String> responses = new HashMap<>();
+
+    public ChatBot() {
+
+        // FAQ / Rule-based responses
+        responses.put("hi", "Hello! How can I help you?");
+        responses.put("hello", "Hi there!");
+        responses.put("how are you", "I'm doing great!");
+        responses.put("what is your name", "I am a Java AI Chatbot.");
+        responses.put("bye", "Goodbye! Have a nice day.");
+        responses.put("help", "You can ask me simple questions.");
+
+        setTitle("Java AI Chatbot");
+        setSize(500, 500);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        chatArea = new JTextArea();
+        chatArea.setEditable(false);
+        chatArea.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        JScrollPane scrollPane = new JScrollPane(chatArea);
+
+        JPanel panel = new JPanel(new BorderLayout());
+
+        inputField = new JTextField();
+        sendButton = new JButton("Send");
+
+        sendButton.addActionListener(this);
+
+        panel.add(inputField, BorderLayout.CENTER);
+        panel.add(sendButton, BorderLayout.EAST);
+
+        add(scrollPane, BorderLayout.CENTER);
+        add(panel, BorderLayout.SOUTH);
+
+        chatArea.append("Bot: Hello! I am your AI Chatbot.\n");
+
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        String userInput = inputField.getText().toLowerCase().trim();
+
+        if (userInput.isEmpty())
+            return;
+
+        chatArea.append("You: " + userInput + "\n");
+
+        String response = getResponse(userInput);
+
+        chatArea.append("Bot: " + response + "\n\n");
+
+        inputField.setText("");
+    }
+
+    private String getResponse(String input) {
+
+        for (String key : responses.keySet()) {
+            if (input.contains(key)) {
+                return responses.get(key);
+            }
+        }
+
+        return "Sorry, I don't understand. Please ask another question.";
+    }
+
+    public static void main(String[] args) {
+        new ChatBot();
+    }
+}
